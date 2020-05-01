@@ -1,6 +1,5 @@
 from flask import Flask, render_template
 import requests
-import gunicorn
 import json
 import xml.etree.ElementTree as ET
 
