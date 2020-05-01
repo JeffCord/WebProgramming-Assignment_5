@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="css/styles.css">
+
+<script>
+  var xmlhttp;
+  function retrieveDataFromServer(url, cfunc)
+  {
+     if (window.XMLHttpRequest)
+     {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+     }
+    else
+     {// code for IE6, IE5
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+     }
+     xmlhttp.onreadystatechange=cfunc;
+     xmlhttp.open("GET", url, true);
+     xmlhttp.send();
+   }
+
+  function displayPools()
+  {
+    retrieveDataFromServer("/pools", function()
+    {
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+      {
+        createTable(xmlhttp.responseText);
+      }
+    });
+  }
+
+  function createTable(jsonData)
+  {
+    console.log(jsonData)
+
+    poolsData = JSON.parse(jsonData)
+
+    var x = document.createElement("TABLE");
+    x.className = "table table-dark table-bordered"
+    x.setAttribute("id", "pools_table");
+    divElement = document.getElementById("poolsDiv");
+    divElement.appendChild(x);
+    
+    createHeaderRow();
+    
+    fontWeight = "normal";
+    var tbody = document.createElement("tbody");
+    document.getElementById("pools_table").appendChild(tbody);
+
+    for(i=0; i<poolsData.length; i++) {
+      createRow(i);
+      createColumn(i, poolsData[i], fontWeight);
+    }
+  }
+
+  function createHeaderRow() {
+    var thead = document.createElement("thead")
+    document.getElementById("pools_table").appendChild(thead);
+    thead.className = "thead-dark"
+
+    headerRow = {}
+    headerRow["Pool_name"] = "Pool_name"
+    headerRow["Pool_type"] = "Pool_type"
+    headerRow["Status"] = "Status"
+    headerRow["Open_date"] = "Open_date"
+    headerRow["Weekday"] = "Weekday"
+    headerRow["Weekend"] = "Weekend" // Value in key/value pair is what gets displayed
+
+    createRow("thead")
+    fontWeight = "bold"
+    createColumn("thead", headerRow, fontWeight)
+  }
+
+  function createRow(rowId) {
+    var y = document.createElement("TR");
+    y.setAttribute("id", rowId);
+    document.getElementById("pools_table").appendChild(y);
+  }
+
+  function createColumn(rowId, data, fontWeight) {
+
+    var emptyCol = document.createElement("th");
+    emptyCol.scope = "row";
+    document.getElementById(rowId).appendChild(emptyCol);
+
+    var nameCol = document.createElement("TD");
+    nameCol.style.fontWeight = fontWeight;
+    nameCol.class = "col px-md-5";
+    var nameData = document.createTextNode(data.Pool_name);
+    nameCol.appendChild(nameData);
+    document.getElementById(rowId).appendChild(nameCol);
+    
+    var poolTypeCol = document.createElement("TD");
+    poolTypeCol.style.fontWeight = fontWeight;
+    poolTypeCol.class = "col px-md-5";
+    var poolTypeData = document.createTextNode(data.Pool_type);
+    poolTypeCol.appendChild(poolTypeData);
+    document.getElementById(rowId).appendChild(poolTypeCol);
+
+    var statusCol = document.createElement("TD");
+    statusCol.style.fontWeight = fontWeight;
+    statusCol.class = "col px-md-5";
+    var statusData = document.createTextNode(data.Status);
+    statusCol.appendChild(statusData);
+    document.getElementById(rowId).appendChild(statusCol);
+    
+    var openDateCol = document.createElement("TD");
+    openDateCol.style.fontWeight = fontWeight;
+    openDateCol.class = "col px-md-5";
+    var openDateData = document.createTextNode(data.Open_date);
+    openDateCol.appendChild(openDateData);
+    document.getElementById(rowId).appendChild(openDateCol);
+    
+    var weekdayCol = document.createElement("TD");
+    weekdayCol.style.fontWeight = fontWeight;
+    weekdayCol.class = "col px-md-5";
+    var weekdayData = document.createTextNode(data.Weekday);
+    weekdayCol.appendChild(weekdayData);
+    document.getElementById(rowId).appendChild(weekdayCol);
+    
+    var weekendCol = document.createElement("TD");
+    weekendCol.style.fontWeight = fontWeight;
+    weekendCol.class = "col px-md-5";
+    var weekendData = document.createTextNode(data.Weekend);
+    weekendCol.appendChild(weekendData);
+    document.getElementById(rowId).appendChild(weekendCol);
+  }
+</script>
+
+</head>
+
+<body onload="displayPools()">
+  <h1> Austin Pools </h1>
+  <div class="jumbotron" >
+    <div class="card">
+      <div class="card-body" id="poolsDiv">
+      </div>
+    </div>
+  </div>
+</body>
+<body>
